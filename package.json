@@ -1,0 +1,35 @@
+{
+  "name": "@civ-clone/base-trade-rate-civ1",
+  "version": "0.1.0",
+  "main": "index.js",
+  "repository": "git@github.com:civ-clone/base-trade-rate-civ1.git",
+  "keywords": [
+    "typescript",
+    "civilization"
+  ],
+  "author": "dom111 <dom111@users.noreply.github.com>",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "build": "npm run prettier:format && npm run ts:compile",
+    "prettier:check": "prettier --config .prettierrc '**/*.ts'",
+    "prettier:format": "prettier --config .prettierrc '**/*.ts' --write",
+    "ts:compile": "tsc --build tsconfig.json"
+  },
+  "devDependencies": {
+    "prettier": "^2.1.2",
+    "typescript": "^4.0.3"
+  },
+  "dependencies": {
+    "@civ-clone/base-terrain-civ1": "github:civ-clone/base-terrain-civ1",
+    "@civ-clone/base-trade-rate-luxuries": "github:civ-clone/base-trade-rate-luxuries",
+    "@civ-clone/base-trade-rate-research": "github:civ-clone/base-trade-rate-research",
+    "@civ-clone/base-trade-rate-tax": "github:civ-clone/base-trade-rate-tax",
+    "@civ-clone/core-city": "github:civ-clone/core-city",
+    "@civ-clone/core-player": "github:civ-clone/core-player",
+    "@civ-clone/core-registry": "github:civ-clone/core-registry",
+    "@civ-clone/core-rule": "github:civ-clone/core-rule",
+    "@civ-clone/core-trade-rate": "github:civ-clone/core-trade-rate",
+    "@civ-clone/core-yield": "github:civ-clone/core-yield"
+  }
+}

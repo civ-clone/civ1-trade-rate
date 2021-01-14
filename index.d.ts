@@ -1,0 +1,2 @@
+import './registerAvailableTradeRates';
+import './registerRules';
