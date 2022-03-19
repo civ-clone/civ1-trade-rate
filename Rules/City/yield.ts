@@ -36,7 +36,10 @@ export const getRules: (
     new Low(),
     new Criterion((cityYield: Yield): boolean => cityYield instanceof Trade),
     new Effect((cityYield: Yield, city: City, yields: Yield[]): void => {
-      const playerRates = playerTradeRatesRegistry.getByPlayer(city.player());
+      const playerRates = playerTradeRatesRegistry.getByPlayer(city.player()),
+        total = cityYield.value();
+
+      let remaining = total;
 
       availableTradeRateRegistry
         .entries()
@@ -52,10 +55,16 @@ export const getRules: (
             yields.push(tradeYield);
           }
 
-          tradeYield.add(
-            cityYield.value() *
-              playerRates.get(TradeRateType as typeof TradeRate).value()
+          const value = Math.min(
+            Math.ceil(
+              total * playerRates.get(TradeRateType as typeof TradeRate).value()
+            ),
+            remaining
           );
+
+          tradeYield.add(value);
+
+          remaining -= value;
 
           (rulesRegistry as IYieldRegistry).process(
             YieldRule,

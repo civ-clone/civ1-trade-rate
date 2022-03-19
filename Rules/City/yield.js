@@ -11,7 +11,8 @@ const Yields_1 = require("@civ-clone/civ1-world/Yields");
 const Low_1 = require("@civ-clone/core-rule/Priorities/Low");
 const getRules = (availableTradeRateRegistry = AvailableTradeRateRegistry_1.instance, playerTradeRatesRegistry = PlayerTradeRatesRegistry_1.instance, rulesRegistry = RuleRegistry_1.instance) => [
     new Yield_1.Yield(new Low_1.default(), new Criterion_1.default((cityYield) => cityYield instanceof Yields_1.Trade), new Effect_1.default((cityYield, city, yields) => {
-        const playerRates = playerTradeRatesRegistry.getByPlayer(city.player());
+        const playerRates = playerTradeRatesRegistry.getByPlayer(city.player()), total = cityYield.value();
+        let remaining = total;
         availableTradeRateRegistry
             .entries()
             .forEach((TradeRateType) => {
@@ -21,8 +22,9 @@ const getRules = (availableTradeRateRegistry = AvailableTradeRateRegistry_1.inst
                 tradeYield = new TradeRateType.tradeYield();
                 yields.push(tradeYield);
             }
-            tradeYield.add(cityYield.value() *
-                playerRates.get(TradeRateType).value());
+            const value = Math.min(Math.ceil(total * playerRates.get(TradeRateType).value()), remaining);
+            tradeYield.add(value);
+            remaining -= value;
             rulesRegistry.process(Yield_1.Yield, tradeYield, city, yields);
         });
     })),
