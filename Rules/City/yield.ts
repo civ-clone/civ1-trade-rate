@@ -6,72 +6,46 @@ import {
   PlayerTradeRatesRegistry,
   instance as playerTradeRatesRegistryInstance,
 } from '@civ-clone/core-trade-rate/PlayerTradeRatesRegistry';
-import {
-  RuleRegistry,
-  instance as ruleRegistryInstance,
-} from '@civ-clone/core-rule/RuleRegistry';
-import {
-  Yield as YieldRule,
-  IYieldRegistry,
-} from '@civ-clone/core-city/Rules/Yield';
 import City from '@civ-clone/core-city/City';
-import Criterion from '@civ-clone/core-rule/Criterion';
 import Effect from '@civ-clone/core-rule/Effect';
 import { IConstructor } from '@civ-clone/core-registry/Registry';
 import { Trade } from '@civ-clone/civ1-world/Yields';
 import TradeRate from '@civ-clone/core-trade-rate/TradeRate';
 import Yield from '@civ-clone/core-yield/Yield';
-import Low from '@civ-clone/core-rule/Priorities/Low';
+import { Yield as YieldRule } from '@civ-clone/core-city/Rules/Yield';
+import High from '@civ-clone/core-rule/Priorities/High';
 
 export const getRules: (
   availableTradeRateRegistry?: AvailableTradeRateRegistry,
-  playerTradeRatesRegistry?: PlayerTradeRatesRegistry,
-  rulesRegistry?: RuleRegistry
+  playerTradeRatesRegistry?: PlayerTradeRatesRegistry
 ) => YieldRule[] = (
   availableTradeRateRegistry: AvailableTradeRateRegistry = availableTradeRateRegistryInstance,
-  playerTradeRatesRegistry: PlayerTradeRatesRegistry = playerTradeRatesRegistryInstance,
-  rulesRegistry: RuleRegistry = ruleRegistryInstance
+  playerTradeRatesRegistry: PlayerTradeRatesRegistry = playerTradeRatesRegistryInstance
 ): YieldRule[] => [
   new YieldRule(
-    new Low(),
-    new Criterion((cityYield: Yield): boolean => cityYield instanceof Trade),
-    new Effect((cityYield: Yield, city: City, yields: Yield[]): void => {
+    new Effect((city: City, yields: Yield[]): Yield[] => {
       const playerRates = playerTradeRatesRegistry.getByPlayer(city.player()),
-        total = cityYield.value();
+        total = yields
+          .filter((cityYield) => cityYield instanceof Trade)
+          .reduce((total, cityYield) => total + cityYield.value(), 0);
 
       let remaining = total;
 
-      availableTradeRateRegistry
+      return availableTradeRateRegistry
         .entries()
-        .forEach((TradeRateType: IConstructor<TradeRate>): void => {
-          let [tradeYield] = yields.filter(
-            (existingYield: Yield) =>
-              existingYield instanceof
-              (TradeRateType as typeof TradeRate).tradeYield
-          );
-
-          if (!tradeYield) {
-            tradeYield = new (TradeRateType as typeof TradeRate).tradeYield();
-            yields.push(tradeYield);
-          }
-
-          const value = Math.min(
-            Math.ceil(
-              total * playerRates.get(TradeRateType as typeof TradeRate).value()
-            ),
-            remaining
-          );
-
-          tradeYield.add(value);
+        .map((TradeRateType: IConstructor<TradeRate>): Yield => {
+          const TradeYield = (TradeRateType as typeof TradeRate).tradeYield,
+            value = Math.min(
+              Math.ceil(
+                total *
+                  playerRates.get(TradeRateType as typeof TradeRate).value()
+              ),
+              remaining
+            );
 
           remaining -= value;
 
-          (rulesRegistry as IYieldRegistry).process(
-            YieldRule,
-            tradeYield,
-            city,
-            yields
-          );
+          return new TradeYield(value, TradeRateType.name);
         });
     })
   ),

@@ -3,29 +3,22 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getRules = void 0;
 const AvailableTradeRateRegistry_1 = require("@civ-clone/core-trade-rate/AvailableTradeRateRegistry");
 const PlayerTradeRatesRegistry_1 = require("@civ-clone/core-trade-rate/PlayerTradeRatesRegistry");
-const RuleRegistry_1 = require("@civ-clone/core-rule/RuleRegistry");
-const Yield_1 = require("@civ-clone/core-city/Rules/Yield");
-const Criterion_1 = require("@civ-clone/core-rule/Criterion");
 const Effect_1 = require("@civ-clone/core-rule/Effect");
 const Yields_1 = require("@civ-clone/civ1-world/Yields");
-const Low_1 = require("@civ-clone/core-rule/Priorities/Low");
-const getRules = (availableTradeRateRegistry = AvailableTradeRateRegistry_1.instance, playerTradeRatesRegistry = PlayerTradeRatesRegistry_1.instance, rulesRegistry = RuleRegistry_1.instance) => [
-    new Yield_1.Yield(new Low_1.default(), new Criterion_1.default((cityYield) => cityYield instanceof Yields_1.Trade), new Effect_1.default((cityYield, city, yields) => {
-        const playerRates = playerTradeRatesRegistry.getByPlayer(city.player()), total = cityYield.value();
+const Yield_1 = require("@civ-clone/core-city/Rules/Yield");
+const getRules = (availableTradeRateRegistry = AvailableTradeRateRegistry_1.instance, playerTradeRatesRegistry = PlayerTradeRatesRegistry_1.instance) => [
+    new Yield_1.Yield(new Effect_1.default((city, yields) => {
+        const playerRates = playerTradeRatesRegistry.getByPlayer(city.player()), total = yields
+            .filter((cityYield) => cityYield instanceof Yields_1.Trade)
+            .reduce((total, cityYield) => total + cityYield.value(), 0);
         let remaining = total;
-        availableTradeRateRegistry
+        return availableTradeRateRegistry
             .entries()
-            .forEach((TradeRateType) => {
-            let [tradeYield] = yields.filter((existingYield) => existingYield instanceof
-                TradeRateType.tradeYield);
-            if (!tradeYield) {
-                tradeYield = new TradeRateType.tradeYield();
-                yields.push(tradeYield);
-            }
-            const value = Math.min(Math.ceil(total * playerRates.get(TradeRateType).value()), remaining);
-            tradeYield.add(value);
+            .map((TradeRateType) => {
+            const TradeYield = TradeRateType.tradeYield, value = Math.min(Math.ceil(total *
+                playerRates.get(TradeRateType).value()), remaining);
             remaining -= value;
-            rulesRegistry.process(Yield_1.Yield, tradeYield, city, yields);
+            return new TradeYield(value, TradeRateType.name);
         });
     })),
 ];
