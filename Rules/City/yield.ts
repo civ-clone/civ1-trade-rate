@@ -2,6 +2,7 @@ import {
   AvailableTradeRateRegistry,
   instance as availableTradeRateRegistryInstance,
 } from '@civ-clone/core-trade-rate/AvailableTradeRateRegistry';
+import { Corruption, Trade } from '../../Yields';
 import {
   PlayerTradeRatesRegistry,
   instance as playerTradeRatesRegistryInstance,
@@ -9,11 +10,10 @@ import {
 import City from '@civ-clone/core-city/City';
 import Effect from '@civ-clone/core-rule/Effect';
 import { IConstructor } from '@civ-clone/core-registry/Registry';
-import { Trade } from '@civ-clone/civ1-world/Yields';
 import TradeRate from '@civ-clone/core-trade-rate/TradeRate';
 import Yield from '@civ-clone/core-yield/Yield';
 import { Yield as YieldRule } from '@civ-clone/core-city/Rules/Yield';
-import High from '@civ-clone/core-rule/Priorities/High';
+import { reduceYield } from '@civ-clone/core-yield/lib/reduceYields';
 
 export const getRules: (
   availableTradeRateRegistry?: AvailableTradeRateRegistry,
@@ -25,9 +25,7 @@ export const getRules: (
   new YieldRule(
     new Effect((city: City, yields: Yield[]): Yield[] => {
       const playerRates = playerTradeRatesRegistry.getByPlayer(city.player()),
-        total = yields
-          .filter((cityYield) => cityYield instanceof Trade)
-          .reduce((total, cityYield) => total + cityYield.value(), 0);
+        total = reduceYield(yields, Trade) - reduceYield(yields, Corruption);
 
       let remaining = total;
 
