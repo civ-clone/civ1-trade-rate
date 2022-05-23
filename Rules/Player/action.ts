@@ -15,7 +15,7 @@ export const getRules: (
 ): Action[] => [
   new Action(
     new Effect((player: Player): PlayerAction[] => [
-      new AdjustTradeRates(playerTradeRateRegistry.getByPlayer(player)),
+      new AdjustTradeRates(player, playerTradeRateRegistry.getByPlayer(player)),
     ])
   ),
 ];

@@ -7,7 +7,7 @@ const PlayerActions_1 = require("../../PlayerActions");
 const Effect_1 = require("@civ-clone/core-rule/Effect");
 const getRules = (playerTradeRateRegistry = PlayerTradeRatesRegistry_1.instance) => [
     new Action_1.default(new Effect_1.default((player) => [
-        new PlayerActions_1.AdjustTradeRates(playerTradeRateRegistry.getByPlayer(player)),
+        new PlayerActions_1.AdjustTradeRates(player, playerTradeRateRegistry.getByPlayer(player)),
     ])),
 ];
 exports.getRules = getRules;
