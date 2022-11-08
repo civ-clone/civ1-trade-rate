@@ -9,7 +9,7 @@ const Yield_1 = require("@civ-clone/core-city/Rules/Yield");
 const reduceYields_1 = require("@civ-clone/core-yield/lib/reduceYields");
 const getRules = (availableTradeRateRegistry = AvailableTradeRateRegistry_1.instance, playerTradeRatesRegistry = PlayerTradeRatesRegistry_1.instance) => [
     new Yield_1.Yield(new Effect_1.default((city, yields) => {
-        const playerRates = playerTradeRatesRegistry.getByPlayer(city.player()), total = (0, reduceYields_1.reduceYield)(yields, Yields_1.Trade) - (0, reduceYields_1.reduceYield)(yields, Yields_1.Corruption);
+        const playerRates = playerTradeRatesRegistry.getByPlayer(city.player()), total = Math.max(0, (0, reduceYields_1.reduceYield)(yields, Yields_1.Trade));
         let remaining = total;
         return availableTradeRateRegistry
             .entries()

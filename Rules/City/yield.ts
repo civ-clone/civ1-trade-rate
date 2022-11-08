@@ -25,7 +25,7 @@ export const getRules: (
   new YieldRule(
     new Effect((city: City, yields: Yield[]): Yield[] => {
       const playerRates = playerTradeRatesRegistry.getByPlayer(city.player()),
-        total = reduceYield(yields, Trade) - reduceYield(yields, Corruption);
+        total = Math.max(0, reduceYield(yields, Trade));
 
       let remaining = total;
 
