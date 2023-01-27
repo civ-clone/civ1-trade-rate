@@ -9,7 +9,6 @@
   ],
   "author": "dom111 <dom111@users.noreply.github.com>",
   "license": "MIT",
-  "private": false,
   "scripts": {
     "build": "npm run ts:compile && npm run prettier:format",
     "prettier:check": "prettier --config .prettierrc '**/*.ts'",
@@ -31,7 +30,7 @@
     "@civ-clone/core-player": "^0.1.0",
     "@civ-clone/core-registry": "^0.1.0",
     "@civ-clone/core-rule": "^0.1.0",
-    "@civ-clone/core-trade-rate": "^0.1.0",
+    "@civ-clone/core-trade-rate": "^0.1.3",
     "@civ-clone/core-yield": "^0.1.0"
   }
 }

@@ -15,7 +15,8 @@ const getRules = (availableTradeRateRegistry = AvailableTradeRateRegistry_1.inst
             .entries()
             .map((TradeRateType) => {
             const TradeYield = TradeRateType.tradeYield, value = Math.min(Math.ceil(total *
-                playerRates.get(TradeRateType).value()), remaining);
+                (playerRates.get(TradeRateType).value() /
+                    100)), remaining);
             remaining -= value;
             return new TradeYield(value, TradeRateType.name);
         });

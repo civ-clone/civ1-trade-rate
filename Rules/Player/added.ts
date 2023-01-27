@@ -22,7 +22,7 @@ export const getRules: (
 ): Added[] => [
   new Added(
     new Effect((player) => {
-      const defaultRates = [new Tax(0.5), new Research(0.5), new Luxuries(0)],
+      const defaultRates = [new Tax(50), new Research(50), new Luxuries(0)],
         availableRates = availableTradeRateRegistry.entries(),
         playerTradeRates = new PlayerTradeRates(
           player,

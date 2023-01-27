@@ -36,7 +36,8 @@ export const getRules: (
             value = Math.min(
               Math.ceil(
                 total *
-                  playerRates.get(TradeRateType as typeof TradeRate).value()
+                  (playerRates.get(TradeRateType as typeof TradeRate).value() /
+                    100)
               ),
               remaining
             );
