@@ -21,7 +21,7 @@ import TurnStart from '@civ-clone/core-player/Rules/TurnStart';
 import Yield from '@civ-clone/core-yield/Yield';
 import { reduceYields } from '@civ-clone/core-yield/lib/reduceYields';
 
-let cachedTradeRateYields: typeof Yield[] = [];
+let cachedTradeRateYields: (typeof Yield)[] = [];
 
 export const getRules: (
   ruleRegistry?: RuleRegistry,
