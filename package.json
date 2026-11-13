@@ -28,8 +28,8 @@
   },
   "dependencies": {
     "@civ-clone/base-city-yield-corruption": "^0.1.0",
-    "@civ-clone/base-player-action-adjust-trade-rates": "^0.1.0",
-    "@civ-clone/base-trade-rate": "github:civ-clone/base-trade-rate#feat/trade-rate-wiring",
+    "@civ-clone/base-player-action-adjust-trade-rates": "^0.1.1",
+    "@civ-clone/base-trade-rate": "^0.1.0",
     "@civ-clone/base-terrain-yield-trade": "^0.1.0",
     "@civ-clone/base-trade-rate-luxuries": "^0.1.0",
     "@civ-clone/base-trade-rate-research": "^0.1.0",
