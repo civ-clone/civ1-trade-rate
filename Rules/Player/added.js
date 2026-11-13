@@ -6,15 +6,10 @@ const PlayerTradeRatesRegistry_1 = require("@civ-clone/core-trade-rate/PlayerTra
 const TradeRates_1 = require("../../TradeRates");
 const Added_1 = require("@civ-clone/core-player/Rules/Added");
 const Effect_1 = require("@civ-clone/core-rule/Effect");
-const PlayerTradeRates_1 = require("@civ-clone/core-trade-rate/PlayerTradeRates");
+const playerTradeRates_1 = require("@civ-clone/base-trade-rate/lib/playerTradeRates");
 const getRules = (availableTradeRateRegistry = AvailableTradeRateRegistry_1.instance, playerTradeRatesRegistry = PlayerTradeRatesRegistry_1.instance) => [
-    new Added_1.default(new Effect_1.default((player) => {
-        const defaultRates = [new TradeRates_1.Tax(50), new TradeRates_1.Research(50), new TradeRates_1.Luxuries(0)], availableRates = availableTradeRateRegistry.entries(), playerTradeRates = new PlayerTradeRates_1.default(player, ...availableRates.map((TradeRateType) => {
-            const [defaultRate] = defaultRates.filter((rate) => rate instanceof TradeRateType);
-            return new TradeRateType(defaultRate || 0);
-        }));
-        playerTradeRatesRegistry.register(playerTradeRates);
-    })),
+    // Every player starts at 50% tax, 50% research and no luxuries.
+    new Added_1.default(new Effect_1.default((player) => (0, playerTradeRates_1.default)(player, [new TradeRates_1.Tax(50), new TradeRates_1.Research(50), new TradeRates_1.Luxuries(0)], availableTradeRateRegistry, playerTradeRatesRegistry))),
 ];
 exports.getRules = getRules;
 exports.default = exports.getRules;

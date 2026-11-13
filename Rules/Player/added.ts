@@ -9,9 +9,8 @@ import {
 import { Research, Tax, Luxuries } from '../../TradeRates';
 import Added from '@civ-clone/core-player/Rules/Added';
 import Effect from '@civ-clone/core-rule/Effect';
-import { IConstructor } from '@civ-clone/core-registry/Registry';
-import PlayerTradeRates from '@civ-clone/core-trade-rate/PlayerTradeRates';
-import TradeRate from '@civ-clone/core-trade-rate/TradeRate';
+import Player from '@civ-clone/core-player/Player';
+import addPlayerTradeRates from '@civ-clone/base-trade-rate/lib/playerTradeRates';
 
 export const getRules: (
   availableTradeRateRegistry?: AvailableTradeRateRegistry,
@@ -20,24 +19,16 @@ export const getRules: (
   availableTradeRateRegistry: AvailableTradeRateRegistry = availableTradeRateRegistryInstance,
   playerTradeRatesRegistry: PlayerTradeRatesRegistry = playerTradeRatesRegistryInstance
 ): Added[] => [
+  // Every player starts at 50% tax, 50% research and no luxuries.
   new Added(
-    new Effect((player) => {
-      const defaultRates = [new Tax(50), new Research(50), new Luxuries(0)],
-        availableRates = availableTradeRateRegistry.entries(),
-        playerTradeRates = new PlayerTradeRates(
-          player,
-          ...availableRates.map(
-            (TradeRateType: IConstructor<TradeRate>): TradeRate => {
-              const [defaultRate] = defaultRates.filter(
-                (rate: TradeRate): boolean => rate instanceof TradeRateType
-              );
-
-              return new TradeRateType(defaultRate || 0);
-            }
-          )
-        );
-      playerTradeRatesRegistry.register(playerTradeRates);
-    })
+    new Effect((player: Player): void =>
+      addPlayerTradeRates(
+        player,
+        [new Tax(50), new Research(50), new Luxuries(0)],
+        availableTradeRateRegistry,
+        playerTradeRatesRegistry
+      )
+    )
   ),
 ];
 
